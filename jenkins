@@ -31,22 +31,36 @@ pipeline {
                     unzip terraform_${TF_VERSION}_linux_amd64.zip -d $HOME/bin
                     rm terraform_${TF_VERSION}_linux_amd64.zip  # Clean up the zip file
                     chmod +x $HOME/bin/terraform
+                    terraform version  # Verify installation
                 '''
+            }
+        }
+        stage('Verify AWS Credentials') {
+            steps {
+                sh 'aws sts get-caller-identity || exit 1'
             }
         }
         stage('Terraform Init') {
             steps {
-                sh 'terraform init'
+                sh '''
+                    set -e
+                    terraform init || exit 1
+                '''
             }
         }
         stage('Terraform Plan') {
             steps {
-                sh 'terraform plan'
+                sh '''
+                    set -x
+                    terraform plan > terraform-plan.log || (cat terraform-plan.log && exit 1)
+                '''
             }
         }
         stage('Terraform Apply') {
             steps {
-                sh 'terraform apply -auto-approve'
+                sh '''
+                    terraform apply -auto-approve || exit 1
+                '''
             }
         }
     }
