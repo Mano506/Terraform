@@ -1,3 +1,4 @@
+
 pipeline {
     agent any
 
@@ -22,7 +23,7 @@ pipeline {
                     sudo apt-get update
                     sudo apt-get install -y wget unzip python3-venv  # Install venv
                     python3 -m venv $HOME/venv  # Create a virtual environment
-                    source $HOME/venv/bin/activate  # Activate the virtual environment
+                    . $HOME/venv/bin/activate  # Activate the virtual environment
                     pip install --upgrade awscli  # Install AWS CLI using pip
                 '''
             }
@@ -47,7 +48,7 @@ pipeline {
             steps {
                 sh '''
                     set -e
-                    source $HOME/venv/bin/activate  # Activate the virtual environment
+                    . $HOME/venv/bin/activate  # Activate the virtual environment
                     aws sts get-caller-identity || exit 1
                 '''
             }
