@@ -11,7 +11,7 @@ pipeline {
     stages {
         stage('Clone GitHub Repository') {
             steps {
-                git url: 'https://github.com/your-username/your-terraform-repo.git', branch: 'main'
+                git url: 'https://https://github.com/Mano506/terraform/blob/main/main.tf', branch: 'main'
             }
         }
         stage('Terraform Init') {
