@@ -12,7 +12,7 @@ pipeline {
     stages {
         stage('Clone GitHub Repository') {
             steps {
-                git url: '', branch: 'main'
+                git url: 'https://github.com/Mano506/terraform.git', branch: 'main'
             }
         }
         // Additional stages for Terraform init, plan, apply...
