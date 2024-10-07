@@ -14,14 +14,24 @@ pipeline {
                 git url: 'https://github.com/Mano506/terraform.git', branch: 'main'
             }
         }
+        stage('Install Dependencies') {
+            steps {
+                sh '''
+                    sudo apt-get update
+                    sudo apt-get install -y wget unzip
+                '''
+            }
+        }
         stage('Install Terraform') {
             steps {
                 sh '''
                     echo "Installing Terraform..."
                     wget https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip
                     unzip terraform_${TF_VERSION}_linux_amd64.zip
-                    sudo mv terraform /usr/local/bin/
-                    chmod +x /usr/local/bin/terraform  # Make it executable
+                    mkdir -p $HOME/bin
+                    mv terraform $HOME/bin/
+                    chmod +x $HOME/bin/terraform
+                    export PATH=$HOME/bin:$PATH
                     terraform --version  # Verify installation
                 '''
             }
@@ -43,4 +53,3 @@ pipeline {
         }
     }
 }
-
