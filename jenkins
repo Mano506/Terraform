@@ -11,6 +11,19 @@ pipeline {
     }
 
     stages {
+        stage('Install Dependencies') {
+            steps {
+                sh '''
+                    set -e
+                    sudo apt-get update
+                    sudo apt-get install -y wget unzip python3-venv awscli  # Install AWS CLI and other dependencies
+                    python3 -m venv $HOME/venv  # Create a virtual environment
+                    . $HOME/venv/bin/activate  # Activate the virtual environment
+                    pip install --upgrade awscli  # Install AWS CLI using pip if needed
+                '''
+            }
+        }
+
         stage('Verify AWS Credentials') {
             steps {
                 script {
@@ -26,19 +39,6 @@ pipeline {
         stage('Clone GitHub Repository') {
             steps {
                 git url: 'https://github.com/Mano506/terraform.git', branch: 'main'
-            }
-        }
-        
-        stage('Install Dependencies') {
-            steps {
-                sh '''
-                    set -e
-                    sudo apt-get update
-                    sudo apt-get install -y wget unzip python3-venv  # Install venv
-                    python3 -m venv $HOME/venv  # Create a virtual environment
-                    . $HOME/venv/bin/activate  # Activate the virtual environment
-                    pip install --upgrade awscli  # Install AWS CLI using pip
-                '''
             }
         }
         
@@ -58,7 +58,7 @@ pipeline {
                 '''
             }
         }
-        
+
         stage('Verify AWS Credentials Again') {
             steps {
                 sh '''
@@ -68,7 +68,7 @@ pipeline {
                 '''
             }
         }
-        
+
         stage('Terraform Init') {
             steps {
                 sh '''
@@ -77,7 +77,7 @@ pipeline {
                 '''
             }
         }
-        
+
         stage('Terraform Plan') {
             steps {
                 sh '''
@@ -86,7 +86,7 @@ pipeline {
                 '''
             }
         }
-        
+
         stage('Terraform Apply') {
             steps {
                 sh '''
