@@ -18,6 +18,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 sh '''
+                    set -e
                     sudo apt-get update
                     sudo apt-get install -y wget unzip python3 python3-pip  # Install Python and pip
                     pip3 install --upgrade awscli  # Install AWS CLI using pip
@@ -27,6 +28,7 @@ pipeline {
         stage('Install Terraform') {
             steps {
                 sh '''
+                    set -e
                     echo "Installing Terraform..."
                     if [ -f "$HOME/bin/terraform" ]; then
                         rm $HOME/bin/terraform  # Remove existing binary
@@ -41,7 +43,10 @@ pipeline {
         }
         stage('Verify AWS Credentials') {
             steps {
-                sh 'aws sts get-caller-identity || exit 1'
+                sh '''
+                    set -e
+                    aws sts get-caller-identity || exit 1
+                '''
             }
         }
         stage('Terraform Init') {
@@ -55,7 +60,7 @@ pipeline {
         stage('Terraform Plan') {
             steps {
                 sh '''
-                    set -x
+                    set -e
                     terraform plan > terraform-plan.log || (cat terraform-plan.log && exit 1)
                 '''
             }
@@ -63,6 +68,7 @@ pipeline {
         stage('Terraform Apply') {
             steps {
                 sh '''
+                    set -e
                     terraform apply -auto-approve || exit 1
                 '''
             }
