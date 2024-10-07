@@ -27,8 +27,11 @@ pipeline {
             steps {
                 sh '''
                     echo "Installing Terraform..."
+                    if [ -f "$HOME/bin/terraform" ]; then
+                        rm $HOME/bin/terraform  # Remove existing binary
+                    fi
                     wget https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip
-                    unzip terraform_${TF_VERSION}_linux_amd64.zip -d $HOME/bin
+                    unzip -o terraform_${TF_VERSION}_linux_amd64.zip -d $HOME/bin
                     rm terraform_${TF_VERSION}_linux_amd64.zip  # Clean up the zip file
                     chmod +x $HOME/bin/terraform
                     terraform version  # Verify installation
