@@ -18,8 +18,8 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 sh '''
-                    sudo apt-get update
-                    sudo apt-get install -y wget unzip
+                    apt-get update
+                    apt-get install -y wget unzip
                 '''
             }
         }
@@ -31,7 +31,6 @@ pipeline {
                     unzip terraform_${TF_VERSION}_linux_amd64.zip -d $HOME/bin
                     rm terraform_${TF_VERSION}_linux_amd64.zip  # Clean up the zip file
                     chmod +x $HOME/bin/terraform
-                    terraform --version  # Verify installation
                 '''
             }
         }
@@ -52,4 +51,3 @@ pipeline {
         }
     }
 }
-
